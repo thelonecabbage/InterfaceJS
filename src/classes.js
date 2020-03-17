@@ -1,6 +1,6 @@
 const noop = () => null
 
-export class Interface {
+class Interface {
   definition () { return {} }
 
   constructor (data = {}, updatedCB = noop) {
@@ -31,19 +31,12 @@ function parseObj (state, data) {
       if (Interface.isPrototypeOf(handler)) {
         acc[key] = new handler(data[key], () => {
           const diff = state.proxy[key].$diff
-          console.log({ key, $diff: diff })
           state.updatedData[key] = diff
           updatedCB(key, state.updatedData[key])
         })
       } else {
         acc[key] = handler(key, data[key])
       }
-    } else {
-      console.log(`${key} WTF`)
-      // if (isObject(handler)) {
-      //   console.log(handler.constructor.name)
-      // }
-      // acc[key] = parseObj(handler, data[key] || {}, original[key] || {})
     }
     return acc
   }, original)
@@ -70,9 +63,6 @@ function serialize (definition, data) {
       } else {
         acc[key] = handler.serialize(key, data[key])
       }
-    } else {
-      console.log(`serialize WTF ${key}`)
-      // acc[key] = serialize(handler, data[key] || {})
     }
     return acc
   }, {})
@@ -106,4 +96,8 @@ const proxyGetterSetter = {
       throw new Error(`"${key}" not found in definitions`)
     }
   }
+}
+
+module.exports = {
+  Interface
 }

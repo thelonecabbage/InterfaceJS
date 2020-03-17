@@ -4,7 +4,7 @@
   "description": "type bindings for APIs in vanilla JS",
   "main": "src/index.js",
   "scripts": {
-    "test": "unit"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/thelonecabbage/InterfaceJS/issues"
   },
-  "homepage": "https://github.com/thelonecabbage/InterfaceJS#readme"
+  "homepage": "https://github.com/thelonecabbage/InterfaceJS#readme",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  },
+  "type": "module"
 }

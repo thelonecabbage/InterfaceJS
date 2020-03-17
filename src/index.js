@@ -1,7 +1,7 @@
-import { Interface } from './classes'
-import { iArray } from './iarray'
-import { iString, iNumber, iDate } from './serializers'
-export {
+const { Interface } = require('./classes')
+const { iArray } = require('./iarray')
+const { iString, iNumber, iDate } = require('./serializers')
+module.exports = {
   Interface,
   iArray,
   iString,

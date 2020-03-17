@@ -1,7 +1,7 @@
-import { Interface } from './classes'
+const { Interface } = require('./classes')
 
 const noop = () => undefined
-export function iArray (handler) {
+function iArray (handler) {
   class ArrayInterface extends Interface {
     constructor (data = [], updatedCB = noop) {
       super()
@@ -62,4 +62,8 @@ const arrayProxyHandler = {
     }
     return true
   }
+}
+
+module.exports= {
+  iArray
 }
