@@ -9,7 +9,10 @@ A quick and easy (I hope) way of two way sanatization for REST APIs in JS.
 - Change detection
 - Change Diff
 
-
+## Installation
+```bash
+npm install @thelonecabbage/InterfaceJS
+```
 ## Type Definition
 ```js
   import { Interface, iArray, iNumber, iString, iDate } from 'InterfaceJS'
