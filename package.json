@@ -1,0 +1,23 @@
+{
+  "name": "@thelonecabbage/interfacejs",
+  "version": "0.1.0",
+  "description": "type bindings for APIs in vanilla JS",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "unit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thelonecabbage/InterfaceJS.git"
+  },
+  "keywords": [
+    "js",
+    "api"
+  ],
+  "author": "Justin Alexander",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thelonecabbage/InterfaceJS/issues"
+  },
+  "homepage": "https://github.com/thelonecabbage/InterfaceJS#readme"
+}
