@@ -1,4 +1,5 @@
-function assertType (key = '', data = undefined, types = []) {
+import { Deserializer } from './classes'
+function assertType (key:string = '', data:any = undefined, types:Array<string> = []):boolean {
   const defined = data !== undefined
   const notNull = data !== null
   if (defined && notNull && !types.includes(typeof data)) {
@@ -6,16 +7,16 @@ function assertType (key = '', data = undefined, types = []) {
   }
   return true
 }
-function isEmpty (val) {
+function isEmpty (val:any) {
   return [undefined, null, ''].includes(val)
 }
-function iString (key = '', data = '') {
+export function iString<Deserializer>(key:string = '', data:string = ''):string {
   assertType(key, data, ['string'])
   return isEmpty(data) ? '' : String(data)
 }
 iString.serialize = iString
 
-function iNumber (key = '', data = '') {
+export function iNumber<Deserializer>(key:string = '', data:string|number = ''):number|undefined {
   assertType(key, data, ['string', 'number'])
   const val = Number(data)
   if (isNaN(val)) {
@@ -28,7 +29,7 @@ function iNumber (key = '', data = '') {
 }
 iNumber.serialize = iNumber
 
-function iDate (key = '', data = undefined) {
+export function iDate<Deserializer>(key:string = '', data:string|number|Date):Date|undefined {
   assertType(key, data, ['string', 'object', 'undefined'])
   const date = new Date(data)
   if (isNaN(date.getDate())) {
@@ -39,14 +40,9 @@ function iDate (key = '', data = undefined) {
   }
   return date
 }
-iDate.serialize = function (key = '', data = undefined) {
+iDate.serialize = function (key = '', data:Date):string | undefined {
   const date = iDate(key, data)
   return date ? date.toISOString() : undefined
 }
 
 
-module.exports = {
-  iDate,
-  iString,
-  iNumber
-}

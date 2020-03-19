@@ -135,6 +135,11 @@ module.exports = {
 
   // The test environment that will be used for testing
   testEnvironment: "node",
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(js|ts)x?$',
+   transform: {
+       '^.+\\.(js|ts)x?$': 'babel-jest'
+   }
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

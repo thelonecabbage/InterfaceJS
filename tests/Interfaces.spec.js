@@ -1,4 +1,4 @@
-const { Interface, iString, iNumber, iDate, iArray } = require('../src/index.js')
+const { Interface, iString, iNumber, iDate, iArray } = require('../src/index.ts')
 
 describe('Interfaces Tests', () => {
   const data = {
