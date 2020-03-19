@@ -16,15 +16,16 @@ export class Interface {
   protected _definition: Dictionary<Deserializer|Interface>
   protected _proxy: any
 
-  constructor (data:Dictionary<any>={}, updatedCB:Function = noop) {
+  constructor (data:Dictionary<any>|null={}, updatedCB:Function = noop) {
 
-    this.updatedData = {}
     this.updatedCB = updatedCB
+    this.updatedData = {}
     this._definition = this.definition()
     this.originalData = {}
-    this.originalData = this.parseObj(data)
-    this._proxy = new Proxy(this, this.proxyHandler)
-
+    if (data !== null) {
+      this.originalData = this.parseObj(data)
+      this._proxy = new Proxy(this, this.proxyHandler)
+    }
     return this._proxy
   }
 
@@ -33,14 +34,14 @@ export class Interface {
     this.updatedCB()
   }
 
-  private getHandlers(key:string) {
+  protected getHandlers(key:string) {
     const handler = <Deserializer>this._definition[key]
     const Handler = <typeof Interface><unknown>this._definition[key]
     const isInstance = Interface.isPrototypeOf(Handler)
     return {handler, Handler, isInstance}
   }
 
-  private deserialize(key:string, data:any) {
+  protected deserialize(key:string, data:any) {
     const {handler, Handler, isInstance} = this.getHandlers(key)
     if (isInstance) {
       return new Handler(data, () => this.keyUpdated(key))
@@ -49,7 +50,7 @@ export class Interface {
     } 
   }
 
-  private serialize(key:string, data:any) {
+  protected serialize(key:string, data:any) {
     const {handler, Handler, isInstance} = this.getHandlers(key)
     if (isInstance || data?.$isInterface) {
       return data.$json
@@ -57,17 +58,15 @@ export class Interface {
       return handler.serialize(key, data)
     } 
   }
-  private parseObj (data:Dictionary<any>):Dictionary<any> {
-    const definition = this._definition
-    const updatedCB = this.updatedCB
-    Object.keys(definition).reduce((acc, key:string) => {
+  protected parseObj (data:Dictionary<any>):Dictionary<any> {
+    Object.keys(this._definition).reduce((acc, key:string) => {
       acc[key] = this.deserialize(key, data[key])
       return acc
-    }, this.originalData)
+    },  <Dictionary<any>>this.originalData)
     return this.originalData
   }
 
-  private proxyHandler = {
+  protected proxyHandler = {
     get (target:Interface, key:string|number) {
       const isInstance:boolean = target.originalData[key] && target.originalData[key].$isInterface
       var value:Dictionary<any>
@@ -96,7 +95,7 @@ export class Interface {
     }
   }
 
-  private diff ():Dictionary<any> {
+  protected diff ():Dictionary<any> {
     const originalData:Dictionary<any> = this.originalData
     const updatedData:Dictionary<any> = this.updatedData
     const data:Dictionary<any> = {}
@@ -112,7 +111,7 @@ export class Interface {
     }, data)
   }
 
-  private serializeObj ():Dictionary<any> {
+  protected serializeObj ():Dictionary<any> {
     const definition:Dictionary<Deserializer|Interface> = this._definition
     const data:Dictionary<any> = this._proxy
     return Object.keys(definition).reduce((acc:Dictionary<any>, key) => {

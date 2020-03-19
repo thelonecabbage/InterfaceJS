@@ -2,80 +2,79 @@ import { Interface, Dictionary, Deserializer } from './classes'
 
 const noop = () => undefined
 
-interface StateInterface  {
-  isInterface: boolean,
-  isDirty: boolean,
-  updatedCB: Function,
-  handler: Deserializer | Interface,
-  target: Array<any>
-}
-export function iArray (handler:Interface|Deserializer):Interface {
+export function iArray (elementHandler:Interface|Deserializer):Interface {
   class ArrayInterface extends Interface {
-    protected originalData: Array<any>
-    protected updatedData: Array<any>
+    definition () {
+      return {}
+    }
+    protected data: Array<any>
     // protected updatedCB: Function
-
+    protected isDirty: boolean = false
     constructor (data:Dictionary<any> = [], updatedCB = noop) {
-      super()
-      const state:StateInterface = {
-        isInterface: Interface.isPrototypeOf(handler),
-        isDirty: false,
-        updatedCB,
-        handler,
-        target: []
+      super(null, updatedCB)
+      this.data = data.map((d:any) => this.deserialize(d))
+      this._proxy = new Proxy(this.data, <ProxyHandler<any>><unknown>this)
+      return this._proxy
+    }
+
+    protected getHandlers() {
+      const handler = <Deserializer>elementHandler
+      const Handler = <typeof Interface><unknown>elementHandler
+      const isInstance = Interface.isPrototypeOf(Handler)
+      return {handler, Handler, isInstance}
+    }
+
+    protected deserialize (value:any):any {
+      const {handler, Handler, isInstance} = this.getHandlers()
+      if (isInstance) {
+        return new Handler(value, () => {
+          this.isDirty = true
+          this.updatedCB()
+        })
+      } else {
+        return handler(`iArray`, value)
       }
-      state.target = data.map(d => deserialize(d, state))
-      var proxy = new Proxy(state.target, {
-        ...arrayProxyHandler,
-        state
-      })
-      return proxy
+    }
+
+    protected serialize (value:any):any {
+      const {handler, Handler, isInstance} = this.getHandlers()
+      if (isInstance) {
+        return value?.$json
+      } else {
+        return handler.serialize(`iArray`, value)
+      }
     }
     
-  }
+    protected serializeObj():Array<any> {
+      return this.data.map((d:any) => this.serialize(d))
+    }
+    protected diff():Array<any> {
+      return this.isDirty ? this.serializeObj() : []
+    }
+
+    protected get(target:Array<any>, property:number|string) {
+      switch (property) {
+        case '$isInterface':
+          return true
+        case '$diff':
+          return this.diff()
+        case '$json':
+          return this.serializeObj()
+      }
+      return target[<number>property]
+    }
+    protected set(target:Dictionary<any>, property:number|string, value:any) {
+      const index = Number(property)
+      this.isDirty = true
+      if (isNaN(index)) {
+        target[property] = value
+      } else {
+        target[index] = this.deserialize(value)
+        this.updatedCB()
+      }
+      return true
+    }
+}
 
   return <Interface><unknown>ArrayInterface
-}
-
-function deserialize (value:any, state:StateInterface):any {
-  const { isInterface, updatedCB } = state
-  const handler:Deserializer = <Deserializer>state.handler
-  const Handler = <typeof Interface><unknown>state.handler
-  return isInterface ? new Handler(value, () => {
-    state.isDirty = true
-    updatedCB()
-  }) : handler(`iArray`, value)
-}
-
-const arrayProxyHandler = {
-  get: function (target:Array<any>, property:number|string) {
-    const state:StateInterface = this.state
-    const { isInterface, handler } = state
-    var value = target[<number>property]
-    const $json = () => isInterface ? target.map(item => item.$json) : target.map((item, index) => handler.serialize(`iArray[${index}]`, item))
-    switch (property) {
-      case '$isInterface':
-        return true
-      case '$diff':
-        value = state.isDirty ? $json() : []
-        break
-      case '$json':
-        value = $json()
-        break
-    }
-    return value
-  },
-  set: function (target:Dictionary<any>, property:number|string, value:any) {
-    const state = this.state
-    const { updatedCB } = state
-    const index = Number(property)
-    state.isDirty = true
-    if (isNaN(index)) {
-      target[property] = value
-    } else {
-      target[index] = deserialize(value, state)
-      updatedCB()
-    }
-    return true
-  }
 }

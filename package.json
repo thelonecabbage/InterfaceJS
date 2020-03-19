@@ -2,10 +2,11 @@
   "name": "@thelonecabbage/interfacejs",
   "version": "0.1.3",
   "description": "type bindings for APIs in vanilla JS",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "babel src/ --out-dir dist/ --extensions \".ts, .tsx\" --source-maps true --include-dotfiles",
-    "build:types": "tsc --emitDeclarationOnly",
+    "build": "npm run build:js; npm run build:types",
+    "build:js": "babel src/ --out-dir dist/ --extensions \".ts, .tsx\" --source-maps true --include-dotfiles",
+    "build:types": "tsc --outDir dist/ --emitDeclarationOnly",
     "test": "jest",
     "check-types": "tsc",
     "check-types:watch": "tsc --watch"
