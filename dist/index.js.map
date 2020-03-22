@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;;AACA;;AACA","sourcesContent":["export { iClass } from './iclass'\nexport { iArray } from './iarray'\nexport { iString, iNumber, iDate } from './serializers'\n"],"file":"index.js"}
