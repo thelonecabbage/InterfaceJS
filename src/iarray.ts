@@ -1,8 +1,13 @@
-import { Interface, InterfaceLike, Dictionary, Deserializer, publicClassMethods } from './base'
+import { Interface, InterfaceLike, InterfaceClass, Dictionary, Deserializer, publicClassMethods } from './base'
 
 const noop = () => undefined
 
-export function iArray (elementHandler:InterfaceLike|Deserializer):Interface {
+export function iArray (_elementHandler:Deserializer|Interface|InterfaceLike|InterfaceClass):Interface {
+
+  const handler = <Deserializer>_elementHandler
+  const Handler = <InterfaceLike><unknown>_elementHandler
+  const isInstance = Interface.isPrototypeOf(Handler)
+
   class ArrayInterface extends Interface {
     protected data: Array<any>
     protected isDirty: boolean = false
@@ -15,9 +20,6 @@ export function iArray (elementHandler:InterfaceLike|Deserializer):Interface {
     }
 
     protected getHandlers() {
-      const handler = <Deserializer>elementHandler
-      const Handler = <InterfaceLike>elementHandler
-      const isInstance = Interface.isPrototypeOf(Handler)
       return {handler, Handler, isInstance}
     }
 

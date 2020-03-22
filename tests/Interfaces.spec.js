@@ -1,4 +1,4 @@
-const { iClass, iString, iNumber, iDate, iArray } = require('../src/index.ts')
+import { iClass, iString, iNumber, iDate, iArray } from '../src/index'
 
 describe('Interfaces Tests', () => {
   const data = {
@@ -127,5 +127,8 @@ describe('Interfaces Tests', () => {
     expect(iData[0]).toEqual(1)
     expect(iData[2]).toEqual(3)
     expect(iData.$json).toEqual([1,2,3,4,5])
+    iData[0] = '1'
+    expect(iData.$json).toEqual([1,2,3,4,5])
+
   })
 })

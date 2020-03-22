@@ -1,9 +1,9 @@
-import { Interface, InterfaceLike, Dictionary, Deserializer, publicClassMethods } from './base'
+import { Interface, InterfaceLike, InterfaceClass, Dictionary, Deserializer, publicClassMethods } from './base'
 
 const noop = () => null
 
 export abstract class iClass extends Interface {
-    protected abstract definition ():Dictionary<Deserializer|Interface>
+    protected abstract definition ():Dictionary<Deserializer|Interface|InterfaceClass|InterfaceLike>
     protected _definition: Dictionary<Deserializer|Interface>
   
     constructor (data:Dictionary<any>, updatedCB:Function = noop) {

@@ -31,7 +31,7 @@ export abstract class Interface {
   public abstract $json():any 
   public abstract $diff():any
 }
-type InterfaceClass = typeof Interface
+export type InterfaceClass = typeof Interface
 export interface InterfaceLike extends InterfaceClass {
   constructor (data:Dictionary<any>, updatedCB:Function):InterfaceLike
 }
