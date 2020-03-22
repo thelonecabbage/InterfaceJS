@@ -1,4 +1,4 @@
-import { Deserializer } from './classes'
+import { Deserializer } from './base'
 function assertType (key:string = '', data:any = undefined, types:Array<string> = []):boolean {
   const defined = data !== undefined
   const notNull = data !== null

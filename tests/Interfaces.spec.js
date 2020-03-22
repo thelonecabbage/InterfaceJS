@@ -1,4 +1,4 @@
-const { Interface, iString, iNumber, iDate, iArray } = require('../src/index.ts')
+const { iClass, iString, iNumber, iDate, iArray } = require('../src/index.ts')
 
 describe('Interfaces Tests', () => {
   const data = {
@@ -28,7 +28,7 @@ describe('Interfaces Tests', () => {
     ],
     created: '2020-03-12T12:47:06.875Z'
   }
-  class AddressInterface extends Interface {
+  class AddressInterface extends iClass {
     definition () {
       return {
         street: iString,
@@ -38,7 +38,7 @@ describe('Interfaces Tests', () => {
       }
     }
   }
-  class DataInterface extends Interface {
+  class DataInterface extends iClass {
     definition () {
       return {
         id: iNumber,

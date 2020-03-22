@@ -1,8 +1,8 @@
-import { Interface } from './classes'
+import { iClass } from './iclass'
 import { iArray } from './iarray'
 import { iString, iNumber, iDate } from './serializers'
 module.exports = {
-  Interface,
+  iClass,
   iArray,
   iString,
   iNumber,
