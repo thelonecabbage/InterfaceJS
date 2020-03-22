@@ -1,6 +1,6 @@
 {
   "name": "@thelonecabbage/interfacejs",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "type bindings for APIs in vanilla JS",
   "main": "dist/index.js",
   "scripts": {
