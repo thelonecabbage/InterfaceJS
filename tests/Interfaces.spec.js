@@ -118,4 +118,14 @@ describe('Interfaces Tests', () => {
           state: 'New York' } ]
     })
   })
+
+  it('test arrays at top level', () => {
+    const nums = [1,2,'3',4,5]
+    const ArrayNum = iArray(iNumber)
+    const iData = new ArrayNum(nums)
+
+    expect(iData[0]).toEqual(1)
+    expect(iData[2]).toEqual(3)
+    expect(iData.$json).toEqual([1,2,3,4,5])
+  })
 })
