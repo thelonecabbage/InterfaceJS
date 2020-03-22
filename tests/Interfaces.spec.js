@@ -29,28 +29,20 @@ describe('Interfaces Tests', () => {
     created: '2020-03-12T12:47:06.875Z'
   }
   class AddressInterface extends iClass {
-    definition () {
-      return {
-        street: iString,
-        zip: iNumber,
-        city: iString,
-        state: iString
-      }
-    }
+    street = iString
+    zip = iNumber
+    city = iString
+    state = iString
   }
   class DataInterface extends iClass {
-    definition () {
-      return {
-        id: iNumber,
-        size: iNumber,
-        slug: iString,
-        optional: iDate,
-        created: iDate,
-        address: AddressInterface,
-        digits: iArray(iNumber),
-        homes: iArray(AddressInterface)
-      }
-    }
+    id = iNumber
+    size = iNumber
+    slug = iString
+    optional = iDate
+    created = iDate
+    address = AddressInterface
+    digits = iArray(iNumber)
+    homes = iArray(AddressInterface)
   }
   const iData = new DataInterface(data)
 

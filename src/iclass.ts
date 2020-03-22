@@ -3,21 +3,21 @@ import { Interface, InterfaceLike, InterfaceClass, Dictionary, Deserializer, pub
 const noop = () => null
 
 export abstract class iClass extends Interface {
-    protected abstract definition ():Dictionary<Deserializer|Interface|InterfaceClass|InterfaceLike>
-    protected _definition: Dictionary<Deserializer|Interface>
-  
+    protected _definition: Dictionary<Deserializer|Interface|InterfaceClass|InterfaceLike>
+    protected _initData:Dictionary<any> = {} 
     constructor (data:Dictionary<any>, updatedCB:Function = noop) {
       super()
-      this.updatedCB = updatedCB
-      this._definition = this.definition()
-      this.originalData = this.parseObj(data)
+      this._updatedCB = updatedCB
+      this._definition =  {}
+      this._originalData = {}
+      this._initData = data
       this._proxy = new Proxy(this, <ProxyHandler<any>><unknown>this)
       return this._proxy
     }
   
     private keyUpdated(key:string) {
-      this.updatedData[key] = this._proxy[key].$diff
-      this.updatedCB()
+      this._updatedData[key] = this._proxy[key].$diff
+      this._updatedCB()
     }
   
     protected getHandlers(key:string) {
@@ -43,26 +43,26 @@ export abstract class iClass extends Interface {
       } else {
         return handler.serialize(key, data)
       } 
-    }
-    protected parseObj (data:Dictionary<any>):Dictionary<any> {
-      Object.keys(this._definition).reduce((acc, key:string) => {
-        acc[key] = this.deserialize(key, data[key])
-        return acc
-      },  <Dictionary<any>>this.originalData)
-      return this.originalData
-    }
-  
+    }  
+
     get (target:iClass, key:string|number):Dictionary<any>{
-    const isInstance:boolean = this.originalData[key]?.$isInterface
-    if (Object.keys(publicClassMethods).includes(<string>key)) {
-        return (<Function>this[<publicClassMethods>key])()
-    }
-    return (isInstance || this.updatedData[key] === undefined) ? this.originalData[key] : this.updatedData[key]
+      const isInstance:boolean = this._originalData[key]?.$isInterface
+      if (Object.keys(publicClassMethods).includes(<string>key)) {
+          return (<Function>this[<publicClassMethods>key])()
+      }
+      return (isInstance || this._updatedData[key] === undefined) ? this._originalData[key] : this._updatedData[key]
     }
     set (target:iClass, key:string, value:any) {
     try {
-        this.updatedData[key] = this.deserialize(key, value)
-        this.updatedCB(key, value)
+        const isInstance = Interface.isPrototypeOf(value)
+        const isFunction = typeof value === 'function'
+        if (isInstance || isFunction) {
+          this._definition[key] = value
+          this._originalData[key] = this.deserialize(key, this._initData[key])
+        } else {
+          this._updatedData[key] = this.deserialize(key, value)
+          this._updatedCB(key, value)  
+        }
         return true
     } catch {
         throw new Error(`"${key}" not found in definitions`)
@@ -70,8 +70,8 @@ export abstract class iClass extends Interface {
     }
   
     public $diff ():Dictionary<any> {
-      const originalData:Dictionary<any> = <Dictionary<any>>this.originalData
-      const updatedData:Dictionary<any> = this.updatedData
+      const originalData:Dictionary<any> = <Dictionary<any>>this._originalData
+      const updatedData:Dictionary<any> = this._updatedData
       const data:Dictionary<any> = {}
       return Object.keys(updatedData).reduce((acc, key) => {
         if (originalData[key] !== updatedData[key]) {
@@ -86,7 +86,7 @@ export abstract class iClass extends Interface {
     }
   
     public $json ():Dictionary<any> {
-      const definition:Dictionary<Deserializer|Interface> = this._definition
+      const definition:Dictionary<Deserializer|Interface|InterfaceClass|InterfaceLike> = this._definition
       const data:Dictionary<any> = this._proxy
       return Object.keys(definition).reduce((acc:Dictionary<any>, key) => {
         acc[key] = this.serialize(key, data[key])

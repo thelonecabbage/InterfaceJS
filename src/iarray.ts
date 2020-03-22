@@ -13,7 +13,7 @@ export function iArray (_elementHandler:Deserializer|Interface|InterfaceLike|Int
     protected isDirty: boolean = false
     constructor (data:Dictionary<any> = [], updatedCB = noop) {
       super()
-      this.updatedCB = updatedCB
+      this._updatedCB = updatedCB
       this.data = data.map((d:any) => this.deserialize(d))
       this._proxy = new Proxy(this.data, <ProxyHandler<any>><unknown>this)
       return this._proxy
@@ -28,7 +28,7 @@ export function iArray (_elementHandler:Deserializer|Interface|InterfaceLike|Int
       if (isInstance) {
         return new Handler(value, () => {
           this.isDirty = true
-          this.updatedCB()
+          this._updatedCB()
         })
       } else {
         return handler(`iArray`, value)
@@ -64,7 +64,7 @@ export function iArray (_elementHandler:Deserializer|Interface|InterfaceLike|Int
         target[property] = value
       } else {
         target[index] = this.deserialize(value)
-        this.updatedCB()
+        this._updatedCB()
       }
       return true
     }

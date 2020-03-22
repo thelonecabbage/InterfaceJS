@@ -15,15 +15,15 @@ export enum publicClassMethods  {
 }
 export abstract class Interface {
   
-  protected updatedCB: Function
-  protected originalData: Dictionary<any>
-  protected updatedData: Dictionary<any>
+  protected _updatedCB: Function
+  protected _originalData: Dictionary<any>
+  protected _updatedData: Dictionary<any>
   protected _proxy: any
 
   constructor (data:Dictionary<any>={}, updatedCB:Function = noop) {
-    this.updatedCB = updatedCB
-    this.updatedData = {}
-    this.originalData = data
+    this._updatedCB = updatedCB
+    this._updatedData = {}
+    this._originalData = {}
   }
   public $isInterface(): boolean {
     return true

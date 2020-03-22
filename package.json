@@ -8,6 +8,7 @@
     "build:js": "babel src/ --out-dir dist/ --extensions \".ts, .tsx\" --source-maps true --include-dotfiles",
     "build:types": "tsc --outDir dist/ --emitDeclarationOnly",
     "test": "jest",
+    "test:debug": "node --inspect-brk --inspect node_modules/.bin/jest --runInBand",
     "check-types": "tsc",
     "check-types:watch": "tsc --watch"
   },

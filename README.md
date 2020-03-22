@@ -18,29 +18,21 @@ npm install @thelonecabbage/InterfaceJS
   import { Interface, iArray, iNumber, iString, iDate } from 'InterfaceJS'
 
   class AddressInterface extends Interface {
-    definition () {
-      return {
-        street: iString, // defining primatives
-        zip: iNumber,
-        city: iString,
-        state: iString
-      }
-    }
+    street = iString // defining primatives
+    zip = iNumber
+    city = iString
+    state = iString
   }
 
   class DataInterface extends Interface {
-    definition () {
-      return {
-        id: iNumber,
-        size: iNumber,
-        slug: iString,
-        optional: iDate,
-        created: iDate,
-        address: AddressInterface, // child objects are interfaces
-        digits: iArray(iNumber), // use the array generator to create lists
-        homes: iArray(AddressInterface)
-      }
-    }
+    id = iNumber
+    size = iNumber
+    slug = iString
+    optional = iDate
+    created = iDate
+    address = AddressInterface // child objects are interfaces
+    digits = iArray(iNumber) // use the array generator to create lists
+    homes = iArray(AddressInterface)
   }
 ```
 
